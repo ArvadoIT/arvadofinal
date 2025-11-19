@@ -7,15 +7,15 @@ export default function ContactSimple() {
   return (
     <section id="contact" className="relative overflow-hidden py-24">
       <div className="mx-auto w-full max-w-5xl px-6 lg:px-8">
-        <div className="text-center mx-auto">
+        <div className="text-center">
           <span className="tag mb-4">Contact</span>
           <h2 className="section-heading">Tell us what you want to launch</h2>
-          <p className="section-subtitle">We'll reply within one business day with next steps.</p>
+          <p className="section-subtitle">We’ll reply within one business day with next steps.</p>
         </div>
         <motion.form
           action={actionUrl}
           method="POST"
-          className="mx-auto mt-10 max-w-2xl space-y-6 rounded-3xl border border-white/10 bg-white/5 p-8 w-full"
+          className="mx-auto mt-10 max-w-2xl space-y-6 rounded-3xl border border-white/10 bg-white/5 p-8"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

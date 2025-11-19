@@ -24,18 +24,41 @@ export function Reveal({
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const inView = useInView(ref, { once: true, margin: "-10% 0% -10% 0%" });
+  const inView = useInView(ref, { 
+    once: true, 
+    margin: "-10% 0% -10% 0%",
+    amount: 0.2,
+  });
   const controls = useAnimation();
+  const [isAnimating, setIsAnimating] = useState(false);
+  
   useEffect(() => {
-    if (inView)
+    if (inView) {
+      setIsAnimating(true);
       controls.start({
         y: 0,
         opacity: 1,
-        transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] },
+        transition: { 
+          duration: 0.6, 
+          delay, 
+          ease: [0.22, 1, 0.36, 1],
+          onComplete: () => {
+            // Animation finished, reset will-change after a brief delay
+            setTimeout(() => setIsAnimating(false), 100);
+          }
+        },
       });
+    }
   }, [inView, controls, delay]);
+  
   return (
-    <motion.div ref={ref} initial={{ y, opacity: 0 }} animate={controls} className={className}>
+    <motion.div 
+      ref={ref} 
+      initial={{ y, opacity: 0 }} 
+      animate={controls} 
+      className={className}
+      style={{ willChange: isAnimating ? 'transform, opacity' : 'auto' }}
+    >
       {children}
     </motion.div>
   );

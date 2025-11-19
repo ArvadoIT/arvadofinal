@@ -52,7 +52,7 @@ export function useLenis(enabled = true) {
     if (!enabled) return;
 
     const lenis = new Lenis({
-      lerp: 0.12,
+      lerp: 0.08,
       smoothWheel: true,
     });
 

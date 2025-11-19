@@ -10,7 +10,7 @@ const navLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
-function MagneticLink({ href, children, className = "" }: { href: string; children: React.ReactNode; className?: string }) {
+function MagneticLink({ href, children, className = "", onClick }: { href: string; children: React.ReactNode; className?: string; onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -47,6 +47,7 @@ function MagneticLink({ href, children, className = "" }: { href: string; childr
       href={href}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onClick={onClick}
       style={{ x: translateX, y: translateY }}
       className={className}
       whileHover={{ scale: 1.05 }}

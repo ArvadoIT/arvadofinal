@@ -12,6 +12,14 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", "sans-serif"],
         orbitron: ["var(--font-orbitron)", "sans-serif"],
+        glass: ["var(--font-glass)", "serif"],
+        frozen: ["var(--font-frozen)", "sans-serif"],
+        water: ["var(--font-water)", "sans-serif"],
+        metal: ["var(--font-metal)", "sans-serif"],
+        step1: ["var(--font-step1)", "serif"],
+        step2: ["var(--font-step2)", "sans-serif"],
+        step3: ["var(--font-step3)", "sans-serif"],
+        step4: ["var(--font-step4)", "serif"],
       },
       colors: {
         "slate-950": "#020617",
