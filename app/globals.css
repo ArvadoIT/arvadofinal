@@ -231,5 +231,124 @@ body {
   .metric:hover .metric-scanline {
     opacity: 1;
   }
+
+  /* --- Services: high-end module cards --- */
+
+  .service-card {
+    position: relative;
+    border-radius: 1.75rem; /* slightly softer than glass-panel */
+    background: radial-gradient(circle at top left, rgba(15, 118, 210, 0.06), transparent 60%),
+                radial-gradient(circle at bottom right, rgba(139, 92, 246, 0.06), transparent 60%),
+                rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    box-shadow:
+      0 18px 45px rgba(15, 23, 42, 0.9),
+      0 0 0 1px rgba(15, 23, 42, 0.7);
+    overflow: hidden;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    transition:
+      transform 220ms cubic-bezier(0.19, 1, 0.22, 1),
+      box-shadow 220ms cubic-bezier(0.19, 1, 0.22, 1),
+      border-color 220ms ease-out,
+      background 220ms ease-out;
+  }
+
+  .service-card-inner {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* faint inner border for that "console module" look */
+  .service-card-inner::before {
+    content: "";
+    position: absolute;
+    inset: 0.5rem;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    pointer-events: none;
+    opacity: 0.75;
+  }
+
+  /* corner badge background */
+  .service-card-corner {
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 20%, rgba(148, 163, 184, 0.35), transparent 65%);
+  }
+
+  /* hover: lift + focus */
+  .service-card-hover {
+    transform: translateY(0);
+  }
+
+  .service-card-hover:hover {
+    transform: translateY(-6px);
+    border-color: rgba(226, 232, 240, 0.55);
+    box-shadow:
+      0 24px 70px rgba(15, 23, 42, 0.95),
+      0 0 0 1px rgba(148, 163, 184, 0.5);
+    background: radial-gradient(circle at top center, rgba(148, 163, 184, 0.09), transparent 60%),
+                rgba(15, 23, 42, 0.98);
+  }
+
+  /* subtle vignette / focus halo */
+  .service-card-halo {
+    position: absolute;
+    inset: -40%;
+    opacity: 0;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.14), transparent 55%),
+      radial-gradient(circle at 80% 100%, rgba(139, 92, 246, 0.14), transparent 55%);
+    transition: opacity 260ms ease-out;
+    pointer-events: none;
+  }
+
+  .service-card-hover:hover .service-card-halo {
+    opacity: 1;
+  }
+
+  /* light sweep along the top edge */
+  .service-card-sweep {
+    position: absolute;
+    top: 0;
+    left: -40%;
+    right: -40%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(248, 250, 252, 0.85),
+      transparent
+    );
+    opacity: 0;
+    transform: translateX(-40%);
+  }
+
+  .service-card-hover:hover .service-card-sweep {
+    opacity: 1;
+    animation: service-sweep 900ms cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes service-sweep {
+    0% {
+      transform: translateX(-40%);
+      opacity: 0;
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(40%);
+      opacity: 0;
+    }
+  }
+
+  /* small caption + number row styling helper */
+  .service-meta {
+    letter-spacing: 0.24em;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    color: rgba(148, 163, 184, 0.8);
+  }
 }
 

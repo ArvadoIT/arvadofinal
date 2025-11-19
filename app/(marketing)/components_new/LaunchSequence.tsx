@@ -71,7 +71,7 @@ const steps = [
 
 export default function LaunchSequence() {
   return (
-    <section id="launch" className="relative overflow-hidden py-24 md:py-32">
+    <section id="launch" className="relative -mt-24 py-24 md:py-32">
       {/* Unified subtle background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-[20%] left-[10%] h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
@@ -81,9 +81,9 @@ export default function LaunchSequence() {
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-6xl px-6 lg:px-8 relative z-10">
+      <div className="mx-auto w-full max-w-5xl px-6 lg:px-8 relative z-10">
         {/* Header */}
-        <Reveal className="text-center mb-16 md:mb-20">
+        <Reveal className="text-center mb-20 md:mb-28">
           <span className="tag mb-4">Process</span>
           <h2 className="section-heading">How we ship momentum</h2>
           <p className="section-subtitle">
@@ -91,61 +91,62 @@ export default function LaunchSequence() {
           </p>
         </Reveal>
 
-        {/* Content layout */}
-        <div className="mt-10 grid grid-cols-1">
-          {/* Main content – each chapter is a tall scene, content near bottom */}
-          <div className="space-y-20 md:space-y-24 lg:space-y-28">
-            {steps.map((step, index) => (
-              <Reveal key={step.id} delay={index * 0.08}>
-                <article className="group relative border-t border-white/10 pt-12 md:pt-16 pb-20 md:pb-24">
-                  {/* Intro row */}
-                  <div className="flex items-center justify-between gap-4 mb-4">
-                    <div className="flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.32em] text-white/55">
-                      <span>{step.number}</span>
-                      <span className="h-px w-8 bg-white/18" />
-                      <span className="hidden sm:inline">
-                        {step.label}
-                      </span>
-                    </div>
-
-                    <div className="hidden md:flex items-center gap-2 text-[0.65rem] text-white/45">
-                      <div className="h-1 w-6 rounded-full bg-emerald-400/60" />
-                      <span>Chapter {index + 1}</span>
-                    </div>
+        {/* Single-column chapters */}
+        <div className="space-y-24 md:space-y-32 lg:space-y-40">
+          {steps.map((step, index) => (
+            <Reveal key={step.id} delay={index * 0.08}>
+              <article className="group relative border-t border-white/10 pt-12 md:pt-16">
+                {/* Top meta row */}
+                <div className="flex items-center justify-between gap-4 mb-5">
+                  <div className="flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.32em] text-white/55">
+                    <span>{step.number}</span>
+                    <span className="h-px w-8 bg-white/18" />
+                    <span className="hidden sm:inline">
+                      {step.label}
+                    </span>
                   </div>
 
-                  {/* Title */}
-                  <h3 className="mb-3 text-2xl md:text-3xl lg:text-4xl font-orbitron tracking-[0.22em] text-white">
-                    {step.title}
-                  </h3>
-
-                  {/* Tagline – word by word */}
-                  {step.tagline && (
-                    <div className="mb-3 text-sm md:text-base text-white/70">
-                      <AnimatedText text={step.tagline} delay={0.05} />
-                    </div>
-                  )}
-
-                  {/* Description – word by word */}
-                  <div className="mb-6 text-base md:text-lg text-white/55 leading-relaxed max-w-xl">
-                    <AnimatedText text={step.description} delay={0.12} />
+                  <div className="hidden md:flex items-center gap-2 text-[0.65rem] text-white/45">
+                    <div className="h-1 w-6 rounded-full bg-emerald-400/60" />
+                    <span>Chapter {index + 1}</span>
                   </div>
+                </div>
 
-                  {/* Bullets */}
-                  {step.bullets && step.bullets.length > 0 && (
-                    <ul className="space-y-2.5 md:space-y-3 text-sm md:text-base text-white/75">
-                      {step.bullets.map((bullet, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          <span className="mt-2 h-px w-5 bg-white/25 group-hover:bg-emerald-400/70 transition-colors" />
-                          <span>{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </article>
-              </Reveal>
-            ))}
-          </div>
+                {/* Title */}
+                <h3 className="mb-4 text-2xl md:text-3xl lg:text-4xl font-orbitron tracking-[0.22em] text-white">
+                  {step.title}
+                </h3>
+
+                {/* Tagline – word by word */}
+                {step.tagline && (
+                  <AnimatedText
+                    text={step.tagline}
+                    className="mb-3 text-sm md:text-base text-white/70 max-w-xl"
+                    delay={0.04}
+                  />
+                )}
+
+                {/* Description – word by word */}
+                <AnimatedText
+                  text={step.description}
+                  className="mb-7 md:mb-9 max-w-2xl text-base md:text-lg text-white/60 leading-relaxed"
+                  delay={0.12}
+                />
+
+                {/* Bullets */}
+                {step.bullets && step.bullets.length > 0 && (
+                  <ul className="space-y-2.5 md:space-y-3 text-sm md:text-base text-white/75">
+                    {step.bullets.map((bullet, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <span className="mt-2 h-px w-5 bg-white/25 group-hover:bg-emerald-400/70 transition-colors" />
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </article>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
