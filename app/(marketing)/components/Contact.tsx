@@ -218,7 +218,7 @@ export default function Contact() {
   }, [formInView, formHasAppeared]);
 
   return (
-    <section id="contact" ref={sectionRef} className="relative overflow-hidden py-24 md:py-32">
+    <section id="contact" ref={sectionRef} className="relative overflow-hidden py-16 sm:py-20 md:py-24 lg:py-32 px-4">
       {/* Animated mesh gradient background */}
       <div className="absolute inset-0 -z-10">
         <motion.div
@@ -293,7 +293,7 @@ export default function Contact() {
       {showConfetti && <ConfettiParticles />}
 
       <SectionFade>
-        <div className="mx-auto grid w-full max-w-5xl gap-10 px-6 lg:grid-cols-[1.1fr_1fr] lg:px-8 relative z-10">
+        <div className="mx-auto grid w-full max-w-5xl gap-8 sm:gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:px-8 relative z-10">
           <div>
             <Reveal>
               <span className="tag mb-4">Contact</span>
@@ -360,8 +360,8 @@ export default function Contact() {
           </div>
 
           <div ref={formRef}>
-            <motion.div
-              className="glass-panel relative overflow-hidden rounded-3xl p-8 md:p-10"
+              <motion.div
+                    className="glass-panel relative overflow-hidden rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10"
               initial={{ opacity: 0, y: 40, filter: "blur(12px)" }}
               animate={formHasAppeared ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 40, filter: "blur(12px)" }}
               transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}

@@ -13,9 +13,9 @@ export default function Footer() {
         <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-cyan-500/5 blur-3xl" />
       </div>
 
-      <footer className="mx-auto w-full max-w-7xl px-6 py-12 md:py-16 lg:px-8">
+      <footer className="mx-auto w-full max-w-7xl px-4 sm:px-6 py-8 sm:py-10 md:py-12 lg:py-16 lg:px-8">
         {/* Main content - two columns */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:gap-16 mb-8">
+        <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 md:gap-12 lg:gap-16 mb-6 sm:mb-8">
           {/* Left Column - Brand */}
           <Reveal>
             <div>
@@ -78,7 +78,7 @@ export default function Footer() {
               {/* Email */}
               <motion.a
                 href="mailto:hello@arvado.ca"
-                className="flex items-center gap-3 text-sm md:text-base text-white/70 hover:text-white transition-colors mb-4 group"
+                className="flex items-center gap-3 text-sm md:text-base text-white/70 hover:text-white transition-colors mb-4 group touch-manipulation min-h-[44px]"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -100,7 +100,7 @@ export default function Footer() {
                 href="https://instagram.com/Arvado.ca"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 text-sm md:text-base text-white/70 hover:text-white transition-colors group"
+                className="flex items-center gap-3 text-sm md:text-base text-white/70 hover:text-white transition-colors group touch-manipulation min-h-[44px]"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -137,7 +137,7 @@ export default function Footer() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
-          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-white/60">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-white/60">
             <motion.a
               href="/privacy-policy"
               className="hover:text-white transition-colors relative group"

@@ -25,12 +25,18 @@ export const metadata: Metadata = {
   title: "Arvado — Premium Digital Growth Studio",
   description:
     "Arvado blends high-end design, AI automation, and performance marketing to help local businesses grow.",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
-      <body className="bg-slate-950 text-white antialiased w-full overflow-x-hidden">
+      <body className="bg-slate-950 text-white antialiased w-full overflow-x-hidden touch-pan-y">
         <script
           dangerouslySetInnerHTML={{
             __html: `

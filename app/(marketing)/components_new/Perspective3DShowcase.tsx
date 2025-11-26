@@ -66,7 +66,7 @@ function Model3D({ scrollProgressRef }: { scrollProgressRef: MutableRefObject<nu
   return (
     <group>
       {/* Ultra-realistic primary model - Reduced geometry for better performance */}
-      <Sphere ref={meshRef} args={[1.5, 48, 48]}>
+      <Sphere ref={meshRef} args={[1, 48, 48]}>
         {/* @ts-ignore */}
         <MeshDistortMaterial
           ref={materialRef}
@@ -76,7 +76,7 @@ function Model3D({ scrollProgressRef }: { scrollProgressRef: MutableRefObject<nu
       
       {/* Ultra-realistic metallic ring - further reduced segments for performance */}
       <Torus
-        args={[2.2, 0.12, 16, 32]} // Further reduced segments for better performance
+        args={[1.5, 0.08, 16, 32]} // Further reduced segments for better performance
         rotation={[Math.PI / 2, 0, 0]}
       >
         <meshStandardMaterial
@@ -92,7 +92,7 @@ function Model3D({ scrollProgressRef }: { scrollProgressRef: MutableRefObject<nu
       
       {/* Inner ring detail - reduced segments */}
       <Torus
-        args={[2.15, 0.03, 8, 16]}
+        args={[1.45, 0.018, 8, 16]}
         rotation={[Math.PI / 2, 0, 0]}
       >
         <meshStandardMaterial
@@ -235,7 +235,7 @@ export default function Perspective3DShowcase() {
   // Scroll progress tracking with optimized offset
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"],
+    offset: ["start 0.8", "end 0.2"],
     layoutEffect: false, // Performance optimization
   });
   
@@ -255,8 +255,8 @@ export default function Perspective3DShowcase() {
   });
   
   // Content animations - memoized transforms
-  const contentOpacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const contentY = useTransform(smoothProgress, [0, 0.5], [50, 0]);
+  const contentOpacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const contentY = useTransform(smoothProgress, [0, 0.4], [30, 0]);
   
   // Background effects
   const bgOpacity = useTransform(smoothProgress, [0, 0.5, 1], [0.3, 0.6, 0.3]);
@@ -272,16 +272,20 @@ export default function Perspective3DShowcase() {
     precision: "mediump" as const, // Use medium precision for better performance
   }), []);
   
-  // Adaptive DPR based on device capabilities - capped for better performance
+  // Adaptive DPR based on device capabilities - mobile optimized
   const adaptiveDPR = useMemo((): [number, number] => {
     if (typeof window === 'undefined') return [1, 1.5];
-    return [1, Math.min(window.devicePixelRatio || 1, 1.5)];
+    const isMobile = window.innerWidth < 640;
+    const isTablet = window.innerWidth < 1024;
+    if (isMobile) return [1, 1]; // Lower DPR on mobile for performance
+    if (isTablet) return [1, 1.25]; // Medium DPR on tablet
+    return [1, Math.min(window.devicePixelRatio || 1, 1.5)]; // Higher DPR on desktop
   }, []);
   
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[150vh] flex items-center justify-center overflow-hidden py-32"
+      className="relative h-screen flex items-center justify-center overflow-hidden px-4"
       id="showcase"
     >
       {/* Background gradient layers */}
@@ -294,20 +298,20 @@ export default function Perspective3DShowcase() {
       </motion.div>
       
       {/* 3D Canvas Container - Optimized for performance */}
-      <div className="absolute inset-0 w-full h-full">
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
         <Canvas
           dpr={adaptiveDPR} // Adaptive DPR for performance
           gl={glConfig}
           frameloop={reduceMotion ? "demand" : "always"}
-          className="w-full h-full"
+          className="w-full h-full touch-pan-y touch-pinch-zoom"
           performance={{ min: 0.5 }} // Performance monitoring
           shadows={false} // Disable shadows for better performance
         >
           <Suspense fallback={null}>
             <PerspectiveCamera
               makeDefault
-              position={[0, 1, 5]}
-              fov={50}
+              position={[0, 0.7, 4.2]}
+              fov={58}
               near={0.1}
               far={100}
             />
@@ -316,9 +320,9 @@ export default function Perspective3DShowcase() {
         </Canvas>
       </div>
       
-      {/* Overlay Content */}
+      {/* Overlay Content - responsive padding */}
       <motion.div
-        className="relative z-10 mx-auto w-full max-w-4xl px-4 text-center sm:px-6 lg:px-8"
+        className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center py-2 sm:py-3"
         style={{
           opacity: contentOpacity,
           y: contentY,
@@ -332,15 +336,15 @@ export default function Perspective3DShowcase() {
         >
           {/* Tag */}
           <motion.div
-            className="mb-6 md:mb-8"
+            className="mb-1 sm:mb-1.5"
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 20 }}
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-5 py-2 text-xs uppercase tracking-[0.4em] text-white/70 backdrop-blur-md">
+            <span className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-white/70 backdrop-blur-md">
               <motion.span
-                className="inline-block h-1.5 w-1.5 rounded-full bg-sky-400"
+                className="inline-block h-0.5 w-0.5 rounded-full bg-sky-400"
                 animate={{
                   opacity: [0.5, 1, 0.5],
                   scale: [1, 1.2, 1],
@@ -355,9 +359,9 @@ export default function Perspective3DShowcase() {
             </span>
           </motion.div>
           
-          {/* Heading */}
+          {/* Heading - responsive text size */}
           <motion.h2
-            className="text-[clamp(2rem,6vw,4rem)] font-bold leading-[1.1] tracking-[-0.02em] text-white mb-6 md:mb-8"
+            className="text-[clamp(1rem,3.5vw,2rem)] sm:text-[clamp(1.2rem,3.8vw,2.5rem)] font-bold leading-[1.1] tracking-[-0.02em] text-white mb-0.5 sm:mb-1"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -374,7 +378,7 @@ export default function Perspective3DShowcase() {
           
           {/* Description */}
           <motion.p
-            className="mx-auto mb-8 md:mb-12 max-w-2xl text-base md:text-lg text-white/70 leading-relaxed"
+            className="mx-auto mb-1.5 sm:mb-2 max-w-2xl text-[11px] sm:text-xs text-white/70 leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -384,16 +388,16 @@ export default function Perspective3DShowcase() {
             Each scroll movement shifts perspective, revealing new dimensions of depth and detail.
           </motion.p>
           
-          {/* Enhanced Scroll Indicator */}
+          {/* Enhanced Scroll Indicator - responsive */}
           <motion.div
-            className="flex flex-col items-center gap-3"
+            className="flex flex-col items-center gap-0.5"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.6, duration: 0.8 }}
           >
             <motion.span 
-              className="text-xs uppercase tracking-widest text-white/60 font-medium"
+              className="text-[8px] sm:text-[9px] uppercase tracking-widest text-white/60 font-medium"
               animate={{
                 opacity: [0.6, 1, 0.6],
               }}
@@ -403,12 +407,13 @@ export default function Perspective3DShowcase() {
                 ease: "easeInOut",
               }}
             >
-              Scroll to rotate
+              <span className="hidden sm:inline">Scroll to rotate</span>
+              <span className="sm:hidden">Swipe to rotate</span>
             </motion.span>
             <motion.div
-              className="relative w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-2 backdrop-blur-sm bg-white/5"
+              className="relative w-3 h-6 rounded-full border-2 border-white/30 flex items-start justify-center p-0.5 backdrop-blur-sm bg-white/5"
               animate={{
-                y: [0, 8, 0],
+                y: [0, 4, 0],
                 borderColor: ["rgba(255, 255, 255, 0.3)", "rgba(14, 165, 233, 0.6)", "rgba(255, 255, 255, 0.3)"],
               }}
               transition={{
@@ -418,7 +423,7 @@ export default function Perspective3DShowcase() {
               }}
             >
               <motion.div 
-                className="w-1.5 h-4 rounded-full bg-gradient-to-b from-sky-400 to-cyan-400"
+                className="w-0.5 h-2 rounded-full bg-gradient-to-b from-sky-400 to-cyan-400"
                 animate={{
                   scaleY: [1, 0.5, 1],
                 }}
@@ -442,11 +447,11 @@ export default function Perspective3DShowcase() {
               />
             </motion.div>
             {/* Progress dots */}
-            <div className="flex gap-1.5 mt-2">
+            <div className="flex gap-0.5 mt-0">
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
-                  className="w-1.5 h-1.5 rounded-full bg-white/30"
+                  className="w-0.5 h-0.5 rounded-full bg-white/30"
                   animate={{
                     scale: [1, 1.3, 1],
                     opacity: [0.3, 1, 0.3],

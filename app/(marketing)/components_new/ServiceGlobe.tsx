@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Sphere, Text, PerspectiveCamera, OrbitControls, Html } from "@react-three/drei";
-import { Suspense, useRef, useState, useMemo } from "react";
+import { Suspense, useRef, useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMotionSettings } from "../components/MotionProvider";
 import { Reveal } from "../lib/scroll-motion";
@@ -286,12 +286,26 @@ function Hotspot({
 function Globe({ selectedService, onServiceClick }: { selectedService: number | null; onServiceClick: (id: number) => void }) {
   const globeRef = useRef<THREE.Mesh>(null);
   const { reduceMotion } = useMotionSettings();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <group>
-      {/* Main globe sphere - further reduced geometry for better performance */}
+      {/* Main globe sphere - reduced geometry for mobile performance */}
       <mesh ref={globeRef}>
-        <sphereGeometry args={[2, 32, 32]} />
+        <sphereGeometry args={[
+          2, 
+          isMobile ? 24 : 32, // Reduced segments on mobile
+          isMobile ? 24 : 32
+        ]} />
         <meshStandardMaterial
           color="#1e293b"
           metalness={0.3}
@@ -301,9 +315,13 @@ function Globe({ selectedService, onServiceClick }: { selectedService: number | 
         />
       </mesh>
       
-      {/* Wireframe overlay for futuristic look - reduced segments */}
+      {/* Wireframe overlay for futuristic look - reduced segments on mobile */}
       <mesh>
-        <sphereGeometry args={[2.01, 16, 16]} />
+        <sphereGeometry args={[
+          2.01, 
+          isMobile ? 12 : 16,
+          isMobile ? 12 : 16
+        ]} />
         <meshBasicMaterial
           color="#0ea5e9"
           wireframe
@@ -510,7 +528,7 @@ export default function ServiceGlobe() {
         </Reveal>
 
         {/* Main content: Globe + Panel */}
-        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 min-h-[600px]">
+        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-12 min-h-[400px] sm:min-h-[500px] lg:min-h-[600px]">
           {/* Connection line effect when service is selected */}
           {selectedServiceData && (
             <motion.div
@@ -547,9 +565,9 @@ export default function ServiceGlobe() {
             </motion.div>
           )}
           
-          {/* 3D Globe Canvas */}
+          {/* 3D Globe Canvas - responsive height */}
           <motion.div 
-            className="w-full lg:w-1/2 h-[500px] lg:h-[600px] relative"
+            className="w-full lg:w-1/2 h-[350px] sm:h-[450px] md:h-[500px] lg:h-[600px] relative"
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, amount: 0.3 }}
@@ -559,7 +577,12 @@ export default function ServiceGlobe() {
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-sky-500/10 via-transparent to-purple-500/10 blur-2xl opacity-50" />
             
             <Canvas
-              dpr={typeof window !== 'undefined' ? [1, Math.min(window.devicePixelRatio || 1, 1.5)] : [1, 1.5]}
+              dpr={typeof window !== 'undefined' ? 
+                [1, Math.min(window.devicePixelRatio || 1, 
+                  window.innerWidth < 640 ? 1 : // Mobile: lower DPR
+                  window.innerWidth < 1024 ? 1.25 : // Tablet: medium DPR
+                  1.5 // Desktop: higher DPR
+                )] : [1, 1.5]}
               gl={{
                 antialias: false,
                 powerPreference: "high-performance",
@@ -570,7 +593,7 @@ export default function ServiceGlobe() {
               }}
               frameloop={reduceMotion ? "demand" : "always"}
               performance={{ min: 0.5 }}
-              className="w-full h-full relative z-10"
+              className="w-full h-full relative z-10 touch-pan-y touch-pinch-zoom"
             >
               <Suspense fallback={null}>
                 <PerspectiveCamera makeDefault position={[0, 0, 6]} fov={50} />
@@ -581,33 +604,35 @@ export default function ServiceGlobe() {
               </Suspense>
             </Canvas>
             
-            {/* Enhanced instructions overlay */}
+            {/* Enhanced instructions overlay - responsive text */}
             <motion.div 
-              className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
+              className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 px-4"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.4 }}
             >
-              <div className="flex items-center gap-3 text-xs text-white/50 uppercase tracking-wider">
+              <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-white/50 uppercase tracking-wider">
                 <span className="flex items-center gap-1.5">
-                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="h-2.5 w-2.5 sm:h-3 sm:w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
                   </svg>
-                  Drag to rotate
+                  <span className="hidden sm:inline">Drag to rotate</span>
+                  <span className="sm:hidden">Swipe to rotate</span>
                 </span>
-                <span className="h-1 w-1 rounded-full bg-white/30" />
+                <span className="hidden sm:inline h-1 w-1 rounded-full bg-white/30" />
                 <span className="flex items-center gap-1.5">
-                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="h-2.5 w-2.5 sm:h-3 sm:w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
                   </svg>
-                  Click hotspots
+                  <span className="hidden sm:inline">Click hotspots</span>
+                  <span className="sm:hidden">Tap hotspots</span>
                 </span>
               </div>
             </motion.div>
           </motion.div>
 
-          {/* Service Detail Panel */}
-          <div className="w-full lg:w-1/2 flex items-center justify-center min-h-[400px]">
+          {/* Service Detail Panel - responsive min-height */}
+          <div className="w-full lg:w-1/2 flex items-center justify-center min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]">
             {selectedServiceData ? (
               <ServicePanel service={selectedServiceData} isVisible={true} />
             ) : (

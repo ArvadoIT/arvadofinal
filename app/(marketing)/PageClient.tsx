@@ -49,7 +49,7 @@ export default function PageClient() {
     <MotionProvider>
       <ScrollProgress />
       <Navigation />
-      <div className="pt-16 w-full overflow-x-hidden">
+      <div className="pt-16 w-full overflow-x-hidden min-h-screen">
         {/* Hero section - first visible content */}
         <CinematicHero />
         <LazyLoadSection>

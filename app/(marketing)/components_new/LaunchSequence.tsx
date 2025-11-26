@@ -71,7 +71,7 @@ const steps = [
 
 export default function LaunchSequence() {
   return (
-    <section id="launch" className="relative -mt-24 py-24 md:py-32">
+    <section id="launch" className="relative py-16 sm:py-20 md:py-24 lg:py-32 pt-24 sm:pt-28 md:pt-32 lg:pt-40 px-4">
       {/* Unified subtle background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-[20%] left-[10%] h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
@@ -81,9 +81,9 @@ export default function LaunchSequence() {
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-5xl px-6 lg:px-8 relative z-10">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
-        <Reveal className="text-center mb-20 md:mb-28">
+        <Reveal className="text-center mb-12 sm:mb-16 md:mb-20 lg:mb-28">
           <span className="tag mb-4">Process</span>
           <h2 className="section-heading">How we ship momentum</h2>
           <p className="section-subtitle">
@@ -91,11 +91,11 @@ export default function LaunchSequence() {
           </p>
         </Reveal>
 
-        {/* Single-column chapters */}
-        <div className="space-y-48 md:space-y-64 lg:space-y-80">
+        {/* Single-column chapters - responsive spacing */}
+        <div className="space-y-32 sm:space-y-40 md:space-y-48 lg:space-y-64 xl:space-y-80">
           {steps.map((step, index) => (
             <Reveal key={step.id} delay={index * 0.08}>
-              <article className="group relative border-t border-white/10 pt-12 md:pt-16">
+              <article className="group relative border-t border-white/10 pt-8 sm:pt-10 md:pt-12 lg:pt-16">
                 {/* Top meta row */}
                 <div className="flex items-center justify-between gap-4 mb-5">
                   <div className="flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.32em] text-white/55">
@@ -112,8 +112,8 @@ export default function LaunchSequence() {
                   </div>
                 </div>
 
-                {/* Title */}
-                <h3 className="mb-4 text-2xl md:text-3xl lg:text-4xl font-orbitron tracking-[0.22em] text-white">
+                {/* Title - responsive text */}
+                <h3 className="mb-3 sm:mb-4 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-orbitron tracking-[0.18em] sm:tracking-[0.22em] text-white break-words">
                   {step.title}
                 </h3>
 

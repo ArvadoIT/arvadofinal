@@ -44,19 +44,19 @@ export default function CinematicHero() {
 	return (
 		<section 
 			ref={sectionRef} 
-			className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 md:pt-32 pb-16 md:pb-24"
+			className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 sm:pt-24 md:pt-32 pb-12 sm:pb-16 md:pb-24 px-4"
 		>
 			{/* Ultra-simplified Background - maximum performance */}
 			<div className="absolute inset-0 -z-10 bg-slate-950">
-				{/* Single simple gradient orb - much smaller and simpler */}
+				{/* Single simple gradient orb - responsive sizes for mobile */}
 				<div 
-					className="absolute top-[20%] left-[15%] w-[300px] h-[300px] rounded-full opacity-15"
+					className="absolute top-[20%] left-[15%] w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] rounded-full opacity-15"
 					style={{
 						background: "radial-gradient(circle, rgba(14,165,233,0.3), transparent 70%)",
 					}}
 				/>
 				<div 
-					className="absolute bottom-[25%] right-[20%] w-[250px] h-[250px] rounded-full opacity-10"
+					className="absolute bottom-[25%] right-[20%] w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] rounded-full opacity-10"
 					style={{
 						background: "radial-gradient(circle, rgba(139,92,246,0.3), transparent 70%)",
 					}}
@@ -68,7 +68,7 @@ export default function CinematicHero() {
 			{/* Main Content - simplified structure */}
 			<motion.div
 				ref={containerRef}
-				className="relative z-10 mx-auto w-full max-w-5xl px-4 text-center sm:px-6 lg:px-8"
+				className="relative z-10 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 text-center"
 				style={{
 					y: enableParallax ? contentY : 0,
 					opacity: enableParallax ? contentOpacity : 1,
@@ -94,11 +94,11 @@ export default function CinematicHero() {
 								{subheadline}
 							</p>
 
-							{/* CTA Buttons - no stagger animations */}
-							<div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+							{/* CTA Buttons - responsive and touch-friendly */}
+							<div className="flex flex-col items-stretch sm:items-center sm:justify-center gap-3 sm:gap-4 sm:flex-row w-full sm:w-auto">
 								<a
 									href="#contact"
-									className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-500 to-cyan-500 px-10 py-4 text-base font-semibold text-white shadow-lg shadow-sky-500/25 ring-1 ring-white/20 transition-transform hover:scale-105 active:scale-95"
+									className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-500 to-cyan-500 px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-base font-semibold text-white shadow-lg shadow-sky-500/25 ring-1 ring-white/20 transition-transform hover:scale-105 active:scale-95 text-center touch-manipulation"
 								>
 									<div className="absolute inset-0 bg-gradient-to-r from-sky-400 to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity" />
 									<span className="relative z-10">Book a call</span>
@@ -106,7 +106,7 @@ export default function CinematicHero() {
 
 								<a
 									href="#launch"
-									className="rounded-2xl border border-white/15 bg-white/[0.05] px-10 py-4 text-base font-medium text-white transition-all hover:bg-white/10 hover:scale-105 active:scale-95"
+									className="rounded-2xl border border-white/15 bg-white/[0.05] px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-base font-medium text-white transition-all hover:bg-white/10 hover:scale-105 active:scale-95 text-center touch-manipulation"
 								>
 									See how we launch
 								</a>

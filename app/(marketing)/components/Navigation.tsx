@@ -206,7 +206,7 @@ function Navigation() {
           : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 lg:px-8 relative">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 py-3 sm:py-4 lg:px-8 relative">
         {/* Logo/Brand */}
         <MagneticLink
           href="/"
@@ -291,10 +291,10 @@ function Navigation() {
           />
         </motion.a>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Button - touch-friendly */}
         <motion.button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10 md:hidden relative overflow-hidden group"
+          className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10 active:bg-white/15 md:hidden relative overflow-hidden group touch-manipulation"
           aria-label="Toggle menu"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -335,7 +335,7 @@ function Navigation() {
               animate={{ y: 0 }}
               exit={{ y: -20 }}
               transition={{ duration: 0.3 }}
-              className="mx-auto max-w-7xl px-6 py-4 space-y-3"
+              className="mx-auto max-w-7xl px-4 sm:px-6 py-4 space-y-2 sm:space-y-3"
             >
               {navLinks.map((link, index) => (
                 <motion.a
@@ -344,7 +344,7 @@ function Navigation() {
                   onClick={(e) => {
                     handleNavClick(e, link.href);
                   }}
-                  className="block py-2 text-sm font-medium text-white/70 transition-colors hover:text-white relative group"
+                  className="block py-3 sm:py-2 text-sm font-medium text-white/70 transition-colors hover:text-white active:text-white relative group touch-manipulation min-h-[44px] flex items-center"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
