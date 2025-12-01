@@ -1,6 +1,6 @@
 # 🔍 Vercel Configuration Issues Found
 
-**Project ID:** `prj_hGUzz36fOGPv5xtliIimZML5hcWM`  
+**Project ID:** `[REMOVED]`  
 **Project Name:** `arvadofinaldeploy`  
 **Date Checked:** $(date)
 
@@ -86,7 +86,7 @@ git push origin main
 After fixing, run this to verify:
 
 ```bash
-VERCEL_TOKEN=eqSp1bfKRxatbiZnUv8XW7nY node check-vercel-project.js
+VERCEL_TOKEN=your_token_here node check-vercel-project.js
 ```
 
 You should see:

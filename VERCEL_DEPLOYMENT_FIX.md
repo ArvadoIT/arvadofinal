@@ -5,7 +5,7 @@ Current branch: `main`
 
 ## 🔍 Check Your Project Configuration via API
 
-**Project ID:** `prj_hGUzz36fOGPv5xtliIimZML5hcWM`
+**Project ID:** `[REMOVED]`
 
 I've created scripts to check your Vercel project configuration:
 
