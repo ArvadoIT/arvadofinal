@@ -21,29 +21,38 @@ export default function PageClient() {
   const [isReady, setIsReady] = useState(false);
   useLenis(true);
 
-  // Optimized scroll to top - deferred to reduce initial load
+  // Ensure page starts at top on every reload
   useEffect(() => {
-    // Disable browser's automatic scroll restoration
+    // Disable browser's automatic scroll restoration immediately
     if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
 
-    // Defer scroll initialization to reduce initial load lag
-    const initTimer = setTimeout(() => {
-      // First, ensure we're at the top with native scroll
-      window.scrollTo(0, 0);
-      
+    // Scroll to top immediately on mount
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    // Also scroll to top when Lenis initializes
+    const checkLenis = setInterval(() => {
       const lenis = getLenisInstance();
       if (lenis) {
-        // Use immediate scroll to prevent visual glitch
         lenis.scrollTo(0, { immediate: true });
+        clearInterval(checkLenis);
+        setIsReady(true);
       }
-      
-      // Mark as ready after initialization
-      setIsReady(true);
-    }, 300); // Defer by 300ms
+    }, 50);
 
-    return () => clearTimeout(initTimer);
+    // Fallback: mark as ready after a short delay even if Lenis isn't ready
+    const fallbackTimer = setTimeout(() => {
+      clearInterval(checkLenis);
+      setIsReady(true);
+    }, 1000);
+
+    return () => {
+      clearInterval(checkLenis);
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   return (

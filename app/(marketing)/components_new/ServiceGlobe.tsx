@@ -497,8 +497,17 @@ export default function ServiceGlobe() {
     [selectedService]
   );
 
+  // Memoize DPR calculation to prevent recalculation on every render
+  const dpr = useMemo(() => {
+    if (typeof window === 'undefined') return [1, 1.5];
+    const width = window.innerWidth;
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    const maxDPR = width < 640 ? 1 : width < 1024 ? 1.25 : 1.5;
+    return [1, Math.min(devicePixelRatio, maxDPR)];
+  }, []);
+
   return (
-    <section id="services" className="relative overflow-hidden py-24 md:py-32">
+    <section id="services" className="relative overflow-hidden py-16 sm:py-20 md:py-24 lg:py-32">
       {/* Enhanced background effects */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         {/* Animated gradient orbs */}
@@ -517,7 +526,7 @@ export default function ServiceGlobe() {
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-8">
         {/* Header */}
-        <Reveal className="text-center mb-16 md:mb-20">
+        <Reveal className="text-center mb-12 sm:mb-16 md:mb-20">
           <span className="tag mb-4">What we deliver</span>
           <h2 className="section-heading">
             A single team for full-stack growth
@@ -528,7 +537,7 @@ export default function ServiceGlobe() {
         </Reveal>
 
         {/* Main content: Globe + Panel */}
-        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-12 min-h-[400px] sm:min-h-[500px] lg:min-h-[600px]">
+        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-12 min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] overflow-visible">
           {/* Connection line effect when service is selected */}
           {selectedServiceData && (
             <motion.div
@@ -567,22 +576,17 @@ export default function ServiceGlobe() {
           
           {/* 3D Globe Canvas - responsive height */}
           <motion.div 
-            className="w-full lg:w-1/2 h-[350px] sm:h-[450px] md:h-[500px] lg:h-[600px] relative"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            className="w-full lg:w-1/2 h-[350px] sm:h-[450px] md:h-[500px] lg:h-[600px] relative lg:-translate-x-8 lg:-translate-y-24"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
+            transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
           >
             {/* Glow effect around canvas */}
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-sky-500/10 via-transparent to-purple-500/10 blur-2xl opacity-50" />
             
             <Canvas
-              dpr={typeof window !== 'undefined' ? 
-                [1, Math.min(window.devicePixelRatio || 1, 
-                  window.innerWidth < 640 ? 1 : // Mobile: lower DPR
-                  window.innerWidth < 1024 ? 1.25 : // Tablet: medium DPR
-                  1.5 // Desktop: higher DPR
-                )] : [1, 1.5]}
+              dpr={dpr}
               gl={{
                 antialias: false,
                 powerPreference: "high-performance",
@@ -594,6 +598,7 @@ export default function ServiceGlobe() {
               frameloop={reduceMotion ? "demand" : "always"}
               performance={{ min: 0.5 }}
               className="w-full h-full relative z-10 touch-pan-y touch-pinch-zoom"
+              style={{ willChange: 'auto' }}
             >
               <Suspense fallback={null}>
                 <PerspectiveCamera makeDefault position={[0, 0, 6]} fov={50} />
@@ -606,12 +611,12 @@ export default function ServiceGlobe() {
             
             {/* Enhanced instructions overlay - responsive text */}
             <motion.div 
-              className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 px-4"
+              className="absolute bottom-2 sm:bottom-0 sm:-bottom-4 right-4 sm:left-1/2 sm:-translate-x-1/2 flex flex-col items-end sm:items-center gap-2 z-20 px-4"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.4 }}
             >
-              <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-white/50 uppercase tracking-wider">
+              <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-white/50 uppercase tracking-wider">
                 <span className="flex items-center gap-1.5">
                   <svg className="h-2.5 w-2.5 sm:h-3 sm:w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />

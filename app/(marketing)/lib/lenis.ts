@@ -66,6 +66,9 @@ export function useLenis(enabled = true) {
 
       lenisInstance = lenis;
 
+      // Ensure we start at the top when Lenis initializes
+      lenis.scrollTo(0, { immediate: true });
+
       let frame: number;
       const raf = (time: number) => {
         lenis.raf(time);
