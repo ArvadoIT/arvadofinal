@@ -5,26 +5,6 @@ import { Mail, Phone, MapPin, CheckCircle2 } from "lucide-react";
 import { Reveal, SectionFade } from "../lib/scroll-motion";
 import { useCallback, useState, useRef, useEffect } from "react";
 
-const contactDetails = [
-  {
-    icon: Mail,
-    label: "Email",
-    value: "hello@arvado.ca",
-    href: "mailto:hello@arvado.ca",
-  },
-  {
-    icon: Phone,
-    label: "Call",
-    value: "(416) 555-0199",
-    href: "tel:+14165550199",
-  },
-  {
-    icon: MapPin,
-    label: "Studio",
-    value: "Toronto & Remote",
-  },
-];
-
 // Floating geometric shapes component - reduced for performance
 function FloatingShapes() {
   const shapes = [
@@ -112,7 +92,29 @@ function ConfettiParticles() {
 }
 
 export default function Contact() {
-  const actionUrl = "https://formsubmit.co/hello@arvado.ca";
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hello@arvado.ca";
+  const actionUrl = `https://formsubmit.co/${contactEmail}`;
+  
+  const contactDetails = [
+    {
+      icon: Mail,
+      label: "Email",
+      value: contactEmail,
+      href: `mailto:${contactEmail}`,
+    },
+    {
+      icon: Phone,
+      label: "Call",
+      value: "(416) 555-0199",
+      href: "tel:+14165550199",
+    },
+    {
+      icon: MapPin,
+      label: "Studio",
+      value: "Toronto & Remote",
+    },
+  ];
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -142,33 +144,43 @@ export default function Contact() {
       setStatus("idle");
 
       try {
-        const response = await fetch(`${actionUrl}/ajax`, {
+        // Correct AJAX endpoint format: /ajax/email (not /email/ajax)
+        const ajaxUrl = `https://formsubmit.co/ajax/${contactEmail}`;
+        const response = await fetch(ajaxUrl, {
           method: "POST",
           headers: { Accept: "application/json" },
           body: formData,
         });
 
-        if (!response.ok) throw new Error("Request failed");
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("FormSubmit AJAX error:", response.status, errorText);
+          throw new Error(`Request failed with status ${response.status}`);
+        }
 
         const result = (await response.json()) as { success?: string };
-        if (result?.success !== "true") throw new Error("Unsuccessful");
+        if (result?.success !== "true") {
+          console.error("FormSubmit AJAX unsuccessful response:", result);
+          throw new Error("Unsuccessful response");
+        }
 
         setStatus("success");
         setShowConfetti(true);
         form.reset();
         setTimeout(() => setShowConfetti(false), 2000);
       } catch (error) {
-        console.error("Contact form submission failed", error);
-        setStatus("error");
-
+        console.error("Contact form AJAX submission failed, using fallback", error);
+        
         // Progressive enhancement fallback to default form submission
+        // Don't show error since fallback will work - just submit normally
         form.action = actionUrl;
         form.submit();
+        // Note: form.submit() will navigate away, so we don't need to update state
       } finally {
         setIsSubmitting(false);
       }
     },
-    [actionUrl, isSubmitting]
+    [actionUrl, contactEmail, isSubmitting]
   );
 
   const { scrollYProgress } = useScroll({

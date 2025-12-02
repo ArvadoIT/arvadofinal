@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 
 export default function ContactSimple() {
-  const actionUrl = "https://formsubmit.co/hello@arvado.ca";
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hello@arvado.ca";
+  const actionUrl = `https://formsubmit.co/${contactEmail}`;
   return (
     <section id="contact" className="relative overflow-hidden py-24">
       <div className="mx-auto w-full max-w-5xl px-6 lg:px-8">
