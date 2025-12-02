@@ -498,13 +498,16 @@ export default function ServiceGlobe() {
   );
 
   // Memoize DPR calculation to prevent recalculation on every render
-  const dpr = useMemo((): [number, number] => {
-    if (typeof window === 'undefined') return [1, 1.5] as [number, number];
+  // Helper function to ensure tuple type is preserved
+  const getDPR = (): [number, number] => {
+    if (typeof window === 'undefined') return [1, 1.5];
     const width = window.innerWidth;
     const devicePixelRatio = window.devicePixelRatio || 1;
     const maxDPR = width < 640 ? 1 : width < 1024 ? 1.25 : 1.5;
-    return [1, Math.min(devicePixelRatio, maxDPR)] as [number, number];
-  }, []);
+    return [1, Math.min(devicePixelRatio, maxDPR)];
+  };
+  
+  const dpr = useMemo(getDPR, []);
 
   return (
     <section id="services" className="relative overflow-hidden py-16 sm:py-20 md:py-24 lg:py-32">
