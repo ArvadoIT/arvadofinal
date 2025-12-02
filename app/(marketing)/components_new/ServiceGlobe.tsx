@@ -507,7 +507,7 @@ export default function ServiceGlobe() {
     return [1, Math.min(devicePixelRatio, maxDPR)];
   };
   
-  const dpr = useMemo(getDPR, []);
+  const dpr = useMemo<[number, number]>(getDPR, []);
 
   return (
     <section id="services" className="relative overflow-hidden py-16 sm:py-20 md:py-24 lg:py-32">
