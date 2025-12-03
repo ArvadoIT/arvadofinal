@@ -122,11 +122,21 @@ export default function Contact() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState("#");
   
   const sectionRef = useRef<HTMLElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const formInView = useInView(formRef, { once: false, amount: 0.3 });
   const [formHasAppeared, setFormHasAppeared] = useState(false);
+
+  // Set redirect URL on client side
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setRedirectUrl(window.location.href);
+    }
+  }, []);
   
 
   const handleSubmit = useCallback(
@@ -166,16 +176,15 @@ export default function Contact() {
 
         setStatus("success");
         setShowConfetti(true);
+        setShowSuccessModal(true);
         form.reset();
+        setFieldValues({});
+        setFieldErrors({});
         setTimeout(() => setShowConfetti(false), 2000);
       } catch (error) {
-        console.error("Contact form AJAX submission failed, using fallback", error);
-        
-        // Progressive enhancement fallback to default form submission
-        // Don't show error since fallback will work - just submit normally
-        form.action = actionUrl;
-        form.submit();
-        // Note: form.submit() will navigate away, so we don't need to update state
+        console.error("Contact form AJAX submission failed", error);
+        setStatus("error");
+        setShowErrorModal(true);
       } finally {
         setIsSubmitting(false);
       }
@@ -429,6 +438,7 @@ export default function Contact() {
                 <input type="hidden" name="_captcha" value="false" />
                 <input type="hidden" name="_template" value="table" />
                 <input type="hidden" name="_subject" value="New Arvado inquiry" />
+                <input type="hidden" name="_next" value={redirectUrl} />
                 <div className="sr-only">
                   <label htmlFor="contact-hub">
                     Do not fill this field if you are human
@@ -786,6 +796,224 @@ export default function Contact() {
           </div>
         </div>
       </SectionFade>
+
+      {/* Success Modal */}
+      <AnimatePresence>
+        {showSuccessModal && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowSuccessModal(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            />
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none"
+            >
+              <motion.div
+                className="relative bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-3xl p-8 max-w-md w-full shadow-2xl pointer-events-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Animated gradient border */}
+                <motion.div
+                  className="absolute inset-0 rounded-3xl"
+                  style={{
+                    padding: "1px",
+                    background: "linear-gradient(135deg, rgba(14, 165, 233, 0.4), rgba(6, 182, 212, 0.3), rgba(16, 185, 129, 0.3), rgba(14, 165, 233, 0.4))",
+                    backgroundSize: "200% 200%",
+                    WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                    WebkitMaskComposite: "xor",
+                    maskComposite: "exclude",
+                  }}
+                  animate={{
+                    backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                />
+                
+                {/* Glow effect */}
+                <motion.div
+                  className="absolute -inset-20 rounded-full blur-3xl bg-emerald-500/20 opacity-50"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.3, 0.5, 0.3],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+
+                <div className="relative z-10 text-center">
+                  <motion.div
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ delay: 0.1, type: "spring", stiffness: 300, damping: 15 }}
+                    className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/20 mb-4"
+                  >
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.2, 1],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <CheckCircle2 className="h-8 w-8 text-emerald-400" strokeWidth={2.5} />
+                    </motion.div>
+                  </motion.div>
+                  
+                  <motion.h3
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-2xl font-semibold text-white mb-2"
+                  >
+                    Message sent
+                  </motion.h3>
+                  
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-sm text-white/70 mb-6"
+                  >
+                    We&apos;ll be in touch within one business day.
+                  </motion.p>
+
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    onClick={() => setShowSuccessModal(false)}
+                    className="w-full rounded-2xl bg-sky-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition hover:bg-sky-400"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Close
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Error Modal */}
+      <AnimatePresence>
+        {showErrorModal && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowErrorModal(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            />
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none"
+            >
+              <motion.div
+                className="relative bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-3xl p-8 max-w-md w-full shadow-2xl pointer-events-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Animated gradient border */}
+                <motion.div
+                  className="absolute inset-0 rounded-3xl"
+                  style={{
+                    padding: "1px",
+                    background: "linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(220, 38, 38, 0.3), rgba(239, 68, 68, 0.4))",
+                    backgroundSize: "200% 200%",
+                    WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                    WebkitMaskComposite: "xor",
+                    maskComposite: "exclude",
+                  }}
+                  animate={{
+                    backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                />
+
+                <div className="relative z-10 text-center">
+                  <motion.div
+                    initial={{ scale: 0, rotate: 180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ delay: 0.1, type: "spring", stiffness: 300, damping: 15 }}
+                    className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-rose-500/20 mb-4"
+                  >
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.1, 1],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <span className="text-rose-400 text-2xl">✕</span>
+                    </motion.div>
+                  </motion.div>
+                  
+                  <motion.h3
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-2xl font-semibold text-white mb-2"
+                  >
+                    Something went wrong
+                  </motion.h3>
+                  
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-sm text-white/70 mb-6"
+                  >
+                    Please try again or contact us directly at {contactEmail}
+                  </motion.p>
+
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    onClick={() => setShowErrorModal(false)}
+                    className="w-full rounded-2xl bg-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/20 transition hover:bg-rose-400"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Close
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
     </section>
   );
